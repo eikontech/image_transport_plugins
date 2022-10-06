@@ -66,14 +66,10 @@ void CompressedSubscriber::subscribeImpl(
     logger_ = node->get_logger();
     typedef image_transport::SimpleSubscriberPlugin<CompressedImage> Base;
 
-    std::string effective_namespace = node->get_effective_namespace();
-    if (effective_namespace.length() > 1 && effective_namespace.back() == '/')
-      effective_namespace.pop_back();
-
-    RCLCPP_INFO_STREAM(node->get_logger(), __FUNCTION__ << " base_topic " << base_topic);
     std::string image_topic = rclcpp::expand_topic_or_service_name(base_topic,
-        node->get_name(), effective_namespace);
+        node->get_name(), node->get_namespace());
     RCLCPP_INFO_STREAM(node->get_logger(), __FUNCTION__ << " image_topic " << image_topic);
+    
 
     Base::subscribeImpl(node, image_topic, callback, custom_qos);
     uint ns_len = node->get_effective_namespace().length();
